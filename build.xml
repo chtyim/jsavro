@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="javascript-avro" default="dist" basedir=".">
+    <description>
+        Javascript-Avro API
+    </description>
+
+    <property name="src" location="src"/>
+    <property name="test" location="test"/>
+    <property name="tools" location="tools"/>
+    <property name="build" location="build"/>
+    <property name="test-build" location="test-build"/>
+    <property name="dist"  location="dist"/>
+
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${build}"/>
+        <mkdir dir="${test-build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <java jar="${tools}/closure-compiler.jar" fork="true">
+            <arg line="--js ${src}/avro.js --js_output_file ${build}/avro-min.js" />
+        </java>
+    </target>
+
+    <target name="test-compile" depends="compile">
+        <javac srcdir="${test}" destdir="${test-build}" includeAntRuntime="false" debug="true" debuglevel="lines,source"/>
+    </target>
+
+    <target name="test" depends="test-compile">
+        <ant antfile="${test}/build.xml" target="run-all-tests" inheritRefs="true" inheritAll="true" />
+    </target>
+
+    <target name="dist" depends="test">
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${test-build}"/>
+        <delete dir="${dist}"/>
+    </target>
+</project>
